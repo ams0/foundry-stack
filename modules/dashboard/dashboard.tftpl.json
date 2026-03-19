@@ -1,0 +1,264 @@
+{
+  "lenses": {
+    "0": {
+      "order": 0,
+      "parts": {
+        "0": {
+          "position": { "x": 0, "y": 0, "colSpan": 12, "rowSpan": 1 },
+          "metadata": {
+            "type": "Extension/HubsExtension/PartType/MarkdownPart",
+            "inputs": [],
+            "settings": {
+              "content": {
+                "settings": {
+                  "content": "# ${name_prefix} — AI Foundry Dashboard\nReal-time monitoring: LiteLLM proxy, AI Services, OpenClaw, infrastructure"
+                }
+              }
+            }
+          }
+        },
+        "1": {
+          "position": { "x": 0, "y": 1, "colSpan": 6, "rowSpan": 4 },
+          "metadata": {
+            "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+            "inputs": [
+              {
+                "name": "resourceTypeMode",
+                "value": "workspace",
+                "isOptional": true
+              },
+              {
+                "name": "ComponentId",
+                "value": {
+                  "SubscriptionId": "${subscription_id}",
+                  "ResourceGroup": "${resource_group}",
+                  "Name": "${workspace_name}",
+                  "ResourceId": "${workspace_resource_id}"
+                },
+                "isOptional": true
+              },
+              {
+                "name": "Scope",
+                "value": {
+                  "resourceIds": ["${workspace_resource_id}"]
+                },
+                "isOptional": true
+              },
+              {
+                "name": "PartId",
+                "value": "litellm-live-requests",
+                "isOptional": true
+              },
+              {
+                "name": "Version",
+                "value": "2.0",
+                "isOptional": true
+              },
+              {
+                "name": "TimeRange",
+                "value": "PT15M",
+                "isOptional": true
+              },
+              {
+                "name": "DashboardId",
+                "isOptional": true
+              },
+              {
+                "name": "DraftRequestParameters",
+                "isOptional": true
+              },
+              {
+                "name": "Query",
+                "value": "ContainerAppConsoleLogs_CL\n| where ContainerAppName_s == '${litellm_app_name}'\n| where Log_s has '\"model\"' and Log_s has '\"usage\"'\n| extend parsed = parse_json(Log_s)\n| project Time=format_datetime(TimeGenerated, 'HH:mm:ss'), Model=tostring(parsed.model), Tokens=toint(parsed.usage.total_tokens), Latency=strcat(tostring(round(toreal(parsed.response_time),2)),'s')\n| order by TimeGenerated desc\n| take 25",
+                "isOptional": true
+              },
+              {
+                "name": "ControlType",
+                "value": "AnalyticsGrid",
+                "isOptional": true
+              },
+              {
+                "name": "SpecificChart",
+                "isOptional": true
+              },
+              {
+                "name": "PartTitle",
+                "value": "LiteLLM — Live Requests (15 min)",
+                "isOptional": true
+              }
+            ],
+            "settings": {}
+          }
+        },
+        "2": {
+          "position": { "x": 6, "y": 1, "colSpan": 6, "rowSpan": 4 },
+          "metadata": {
+            "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+            "inputs": [
+              { "name": "resourceTypeMode", "value": "workspace", "isOptional": true },
+              { "name": "ComponentId", "value": { "SubscriptionId": "${subscription_id}", "ResourceGroup": "${resource_group}", "Name": "${workspace_name}", "ResourceId": "${workspace_resource_id}" }, "isOptional": true },
+              { "name": "Scope", "value": { "resourceIds": ["${workspace_resource_id}"] }, "isOptional": true },
+              { "name": "PartId", "value": "request-volume", "isOptional": true },
+              { "name": "Version", "value": "2.0", "isOptional": true },
+              { "name": "TimeRange", "value": "PT1H", "isOptional": true },
+              { "name": "Query", "value": "ContainerAppConsoleLogs_CL\n| where ContainerAppName_s == '${litellm_app_name}'\n| where Log_s has '\"model\"' and Log_s has '\"usage\"'\n| extend parsed = parse_json(Log_s)\n| summarize Requests=count(), TotalTokens=sum(toint(parsed.usage.total_tokens)) by bin(TimeGenerated, 5m)\n| order by TimeGenerated desc", "isOptional": true },
+              { "name": "ControlType", "value": "FrameControlChart", "isOptional": true },
+              { "name": "SpecificChart", "value": "Line", "isOptional": true },
+              { "name": "PartTitle", "value": "Request Volume & Tokens (1 hour)", "isOptional": true }
+            ],
+            "settings": {}
+          }
+        },
+        "3": {
+          "position": { "x": 0, "y": 5, "colSpan": 6, "rowSpan": 4 },
+          "metadata": {
+            "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+            "inputs": [
+              { "name": "resourceTypeMode", "value": "workspace", "isOptional": true },
+              { "name": "ComponentId", "value": { "SubscriptionId": "${subscription_id}", "ResourceGroup": "${resource_group}", "Name": "${workspace_name}", "ResourceId": "${workspace_resource_id}" }, "isOptional": true },
+              { "name": "Scope", "value": { "resourceIds": ["${workspace_resource_id}"] }, "isOptional": true },
+              { "name": "PartId", "value": "token-usage", "isOptional": true },
+              { "name": "Version", "value": "2.0", "isOptional": true },
+              { "name": "TimeRange", "value": "P1D", "isOptional": true },
+              { "name": "Query", "value": "ContainerAppConsoleLogs_CL\n| where ContainerAppName_s == '${litellm_app_name}'\n| where Log_s has '\"total_tokens\"'\n| extend parsed = parse_json(Log_s)\n| summarize Requests=count(), TotalTokens=sum(toint(parsed.usage.total_tokens)), AvgLatency=round(avg(toreal(parsed.response_time)),2) by Model=tostring(parsed.model)", "isOptional": true },
+              { "name": "ControlType", "value": "AnalyticsGrid", "isOptional": true },
+              { "name": "PartTitle", "value": "Token Usage by Model (24h)", "isOptional": true }
+            ],
+            "settings": {}
+          }
+        },
+        "4": {
+          "position": { "x": 6, "y": 5, "colSpan": 6, "rowSpan": 4 },
+          "metadata": {
+            "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+            "inputs": [
+              { "name": "resourceTypeMode", "value": "workspace", "isOptional": true },
+              { "name": "ComponentId", "value": { "SubscriptionId": "${subscription_id}", "ResourceGroup": "${resource_group}", "Name": "${workspace_name}", "ResourceId": "${workspace_resource_id}" }, "isOptional": true },
+              { "name": "Scope", "value": { "resourceIds": ["${workspace_resource_id}"] }, "isOptional": true },
+              { "name": "PartId", "value": "error-rate", "isOptional": true },
+              { "name": "Version", "value": "2.0", "isOptional": true },
+              { "name": "TimeRange", "value": "PT1H", "isOptional": true },
+              { "name": "Query", "value": "ContainerAppConsoleLogs_CL\n| where ContainerAppName_s == '${litellm_app_name}'\n| extend IsError = Log_s has '\"level\": \"ERROR\"' or Log_s has 'APIError'\n| summarize Total=count(), Errors=countif(IsError), ErrorPct=round(100.0*countif(IsError)/count(),1) by bin(TimeGenerated, 5m)\n| order by TimeGenerated desc", "isOptional": true },
+              { "name": "ControlType", "value": "FrameControlChart", "isOptional": true },
+              { "name": "SpecificChart", "value": "Line", "isOptional": true },
+              { "name": "PartTitle", "value": "Error Rate (1 hour)", "isOptional": true }
+            ],
+            "settings": {}
+          }
+        },
+        "5": {
+          "position": { "x": 0, "y": 9, "colSpan": 4, "rowSpan": 4 },
+          "metadata": {
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "inputs": [
+              { "name": "sharedTimeRange", "isOptional": true }
+            ],
+            "settings": {
+              "content": {
+                "options": {
+                  "chart": {
+                    "title": "AI Services — Requests",
+                    "metrics": [
+                      { "resourceMetadata": { "id": "${ai_services_id}" }, "name": "SuccessfulCalls", "aggregationType": 1, "namespace": "Microsoft.CognitiveServices/accounts" },
+                      { "resourceMetadata": { "id": "${ai_services_id}" }, "name": "ClientErrors", "aggregationType": 1, "namespace": "Microsoft.CognitiveServices/accounts" }
+                    ],
+                    "timespan": { "relative": { "duration": 3600000 } },
+                    "visualization": { "chartType": 2 }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "6": {
+          "position": { "x": 4, "y": 9, "colSpan": 4, "rowSpan": 4 },
+          "metadata": {
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "inputs": [
+              { "name": "sharedTimeRange", "isOptional": true }
+            ],
+            "settings": {
+              "content": {
+                "options": {
+                  "chart": {
+                    "title": "AI Services — Latency (ms)",
+                    "metrics": [
+                      { "resourceMetadata": { "id": "${ai_services_id}" }, "name": "Latency", "aggregationType": 4, "namespace": "Microsoft.CognitiveServices/accounts" }
+                    ],
+                    "timespan": { "relative": { "duration": 3600000 } },
+                    "visualization": { "chartType": 2 }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "7": {
+          "position": { "x": 8, "y": 9, "colSpan": 4, "rowSpan": 4 },
+          "metadata": {
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "inputs": [
+              { "name": "sharedTimeRange", "isOptional": true }
+            ],
+            "settings": {
+              "content": {
+                "options": {
+                  "chart": {
+                    "title": "AI Search — Latency",
+                    "metrics": [
+                      { "resourceMetadata": { "id": "${search_id}" }, "name": "SearchLatency", "aggregationType": 4, "namespace": "Microsoft.Search/searchServices" }
+                    ],
+                    "timespan": { "relative": { "duration": 3600000 } },
+                    "visualization": { "chartType": 2 }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "8": {
+          "position": { "x": 0, "y": 13, "colSpan": 6, "rowSpan": 4 },
+          "metadata": {
+            "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+            "inputs": [
+              { "name": "resourceTypeMode", "value": "workspace", "isOptional": true },
+              { "name": "ComponentId", "value": { "SubscriptionId": "${subscription_id}", "ResourceGroup": "${resource_group}", "Name": "${workspace_name}", "ResourceId": "${workspace_resource_id}" }, "isOptional": true },
+              { "name": "Scope", "value": { "resourceIds": ["${workspace_resource_id}"] }, "isOptional": true },
+              { "name": "PartId", "value": "openclaw-activity", "isOptional": true },
+              { "name": "Version", "value": "2.0", "isOptional": true },
+              { "name": "TimeRange", "value": "PT15M", "isOptional": true },
+              { "name": "Query", "value": "ContainerAppConsoleLogs_CL\n| where ContainerAppName_s == '${openclaw_app_name}'\n| where Log_s has 'agent' or Log_s has 'model' or Log_s has 'error'\n| project Time=format_datetime(TimeGenerated, 'HH:mm:ss'), Log=substring(Log_s, 0, 200)\n| order by TimeGenerated desc\n| take 20", "isOptional": true },
+              { "name": "ControlType", "value": "AnalyticsGrid", "isOptional": true },
+              { "name": "PartTitle", "value": "OpenClaw — Agent Activity (15 min)", "isOptional": true }
+            ],
+            "settings": {}
+          }
+        },
+        "9": {
+          "position": { "x": 6, "y": 13, "colSpan": 6, "rowSpan": 4 },
+          "metadata": {
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "inputs": [
+              { "name": "sharedTimeRange", "isOptional": true }
+            ],
+            "settings": {
+              "content": {
+                "options": {
+                  "chart": {
+                    "title": "Storage — Availability & Latency",
+                    "metrics": [
+                      { "resourceMetadata": { "id": "${storage_id}" }, "name": "Availability", "aggregationType": 4, "namespace": "Microsoft.Storage/storageAccounts" },
+                      { "resourceMetadata": { "id": "${storage_id}" }, "name": "SuccessE2ELatency", "aggregationType": 4, "namespace": "Microsoft.Storage/storageAccounts" }
+                    ],
+                    "timespan": { "relative": { "duration": 3600000 } },
+                    "visualization": { "chartType": 2 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

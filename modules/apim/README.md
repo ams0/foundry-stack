@@ -1,0 +1,49 @@
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 4.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.64.0 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [azurerm_api_management.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management) | resource |
+| [azurerm_api_management_api.foundry](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api) | resource |
+| [azurerm_private_endpoint.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_dns_zone_id"></a> [dns\_zone\_id](#input\_dns\_zone\_id) | Private DNS zone ID for APIM | `string` | `null` | no |
+| <a name="input_enable_apim"></a> [enable\_apim](#input\_enable\_apim) | Whether to create APIM resources | `bool` | `false` | no |
+| <a name="input_enable_private_networking"></a> [enable\_private\_networking](#input\_enable\_private\_networking) | Enable private endpoint | `bool` | `false` | no |
+| <a name="input_foundry_endpoint"></a> [foundry\_endpoint](#input\_foundry\_endpoint) | AI Foundry endpoint URL for API backend | `string` | `""` | no |
+| <a name="input_location"></a> [location](#input\_location) | Azure region | `string` | `"swedencentral"` | no |
+| <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for resource names | `string` | n/a | yes |
+| <a name="input_publisher_email"></a> [publisher\_email](#input\_publisher\_email) | APIM publisher email | `string` | `"admin@example.com"` | no |
+| <a name="input_publisher_name"></a> [publisher\_name](#input\_publisher\_name) | APIM publisher name | `string` | `"AI Platform Team"` | no |
+| <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group | `string` | n/a | yes |
+| <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name) | APIM SKU | `string` | `"Developer_1"` | no |
+| <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Subnet ID for private endpoint | `string` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Additional tags to merge with defaults | `map(string)` | `{}` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_api_id"></a> [api\_id](#output\_api\_id) | Foundry API resource ID |
+| <a name="output_gateway_url"></a> [gateway\_url](#output\_gateway\_url) | APIM gateway URL |
+| <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id) | APIM system-assigned identity principal ID |

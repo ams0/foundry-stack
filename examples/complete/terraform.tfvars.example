@@ -1,0 +1,25 @@
+name_prefix               = "foundry-prod"
+location                  = "swedencentral"
+enable_private_networking = false
+search_sku                = "standard" # "basic" (~$75/mo) or "standard" (~$250/mo)
+enable_redis              = false
+enable_apim               = false
+enable_litellm            = false
+enable_cosmosdb           = false
+cosmosdb_capacity_mode    = "serverless" # "serverless" (pay-per-use) or "provisioned" (~$24/mo)
+alert_email               = "ops@example.com"
+
+# IP allowlist for AI Services (empty = allow all public access)
+allowed_ips = ["95.99.46.198"]
+
+# Required if management group policy forces publicNetworkAccess=Disabled on Hubs.
+# Find with: az policy state list --resource <hub-resource-id> --query "[?policyDefinitionAction=='modify']"
+policy_exemption_policy_assignment_id = ""
+
+# Set to false when running terraform destroy
+prevent_deletion_if_contains_resources = true
+
+tags = {
+  Environment = "production"
+  Project     = "ai-foundry"
+}

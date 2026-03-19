@@ -1,0 +1,11 @@
+name_prefix               = "foundry-dev"
+location                  = "swedencentral"
+enable_private_networking = false
+
+# Set to false when running terraform destroy
+prevent_deletion_if_contains_resources = true
+
+tags = {
+  Environment = "development"
+  Project     = "ai-foundry"
+}
