@@ -74,3 +74,31 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+# --- Logic App usage-ingestion containers ---
+
+variable "create_logic_app_containers" {
+  description = "Create the four containers used by the Logic App usage-ingestion workflows (usage, pii-usage, llm-usage, config) under the logic_app_database."
+  type        = bool
+  default     = false
+}
+
+variable "logic_app_database" {
+  description = "Database name to create the Logic App containers under. Created automatically when create_logic_app_containers = true."
+  type        = string
+  default     = "ai-usage"
+}
+
+variable "logic_app_containers" {
+  description = "Container name + partition key path for each Logic App container. Names must match Logic App app settings (CosmosDBContainerUsage / *PII / *LLMUsage / *Config)."
+  type = map(object({
+    name                = string
+    partition_key_paths = list(string)
+  }))
+  default = {
+    usage     = { name = "usage", partition_key_paths = ["/subscriptionId"] }
+    pii_usage = { name = "pii-usage", partition_key_paths = ["/subscriptionId"] }
+    llm_usage = { name = "llm-usage", partition_key_paths = ["/model"] }
+    config    = { name = "config", partition_key_paths = ["/id"] }
+  }
+}

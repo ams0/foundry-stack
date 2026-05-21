@@ -57,6 +57,16 @@ output "dashboard_url" {
   value       = module.dashboard.dashboard_url
 }
 
+output "event_hub_namespace_endpoint" {
+  description = "Event Hubs namespace endpoint (consumed by APIM EH loggers)."
+  value       = module.event_hub.namespace_endpoint
+}
+
+output "logic_app_name" {
+  description = "Usage-ingestion Logic App name (empty when disabled)."
+  value       = module.logic_app.name
+}
+
 output "estimated_monthly_cost" {
   description = "Estimated monthly infrastructure cost (USD). Does not include API/token usage."
   value = format(

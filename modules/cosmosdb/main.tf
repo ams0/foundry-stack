@@ -3,9 +3,16 @@ locals {
 
   is_serverless = var.capacity_mode == "serverless"
 
+  effective_databases = merge(
+    var.databases,
+    var.create_logic_app_containers ? {
+      (var.logic_app_database) = [for k, c in var.logic_app_containers : { name = c.name, partition_key_paths = c.partition_key_paths }]
+    } : {},
+  )
+
   # Flatten databases + containers into a single map for for_each
   containers = merge([
-    for db_name, containers in var.databases : {
+    for db_name, containers in local.effective_databases : {
       for c in containers : "${db_name}/${c.name}" => {
         database_name       = db_name
         container_name      = c.name
@@ -46,7 +53,7 @@ resource "azurerm_cosmosdb_account" "this" {
 }
 
 resource "azurerm_cosmosdb_sql_database" "this" {
-  for_each = var.enable_cosmosdb ? var.databases : {}
+  for_each = var.enable_cosmosdb ? local.effective_databases : {}
 
   name                = each.key
   resource_group_name = var.resource_group_name

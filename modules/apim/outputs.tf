@@ -3,6 +3,16 @@ output "gateway_url" {
   value       = var.enable_apim ? azurerm_api_management.this[0].gateway_url : null
 }
 
+output "id" {
+  description = "APIM resource ID"
+  value       = var.enable_apim ? azurerm_api_management.this[0].id : null
+}
+
+output "name" {
+  description = "APIM instance name"
+  value       = var.enable_apim ? azurerm_api_management.this[0].name : null
+}
+
 output "api_id" {
   description = "Foundry API resource ID"
   value       = var.enable_apim ? azurerm_api_management_api.foundry[0].id : null

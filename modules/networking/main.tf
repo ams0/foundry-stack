@@ -20,6 +20,7 @@ locals {
     var.enable_apim ? { apim = "privatelink.azure-api.net" } : {},
     var.enable_litellm ? { litellm = "privatelink.${var.location}.azurecontainerapps.io" } : {},
     var.enable_cosmosdb ? { cosmosdb = "privatelink.documents.azure.com" } : {},
+    var.enable_event_hub ? { event_hub = "privatelink.servicebus.windows.net" } : {},
   )
 
   all_dns_zones = var.enable_private_networking ? merge(local.core_dns_zones, local.optional_dns_zones) : {}
@@ -36,6 +37,7 @@ locals {
     var.enable_apim ? { apim = var.subnet_cidrs["apim"] } : {},
     var.enable_litellm ? { litellm = var.subnet_cidrs["litellm"] } : {},
     var.enable_cosmosdb ? { cosmosdb = var.subnet_cidrs["cosmosdb"] } : {},
+    var.enable_event_hub ? { event_hub = var.subnet_cidrs["event_hub"] } : {},
   )
 
   all_subnets = var.enable_private_networking ? merge(local.core_subnets, local.optional_subnets) : {}

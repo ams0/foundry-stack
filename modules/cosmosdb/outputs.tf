@@ -24,3 +24,13 @@ output "connection_string" {
   value       = var.enable_cosmosdb ? azurerm_cosmosdb_account.this[0].primary_sql_connection_string : null
   sensitive   = true
 }
+
+output "logic_app_database" {
+  description = "Database name hosting the Logic App containers (only meaningful when create_logic_app_containers = true)."
+  value       = var.create_logic_app_containers ? var.logic_app_database : null
+}
+
+output "logic_app_container_names" {
+  description = "Map of Logic App container key → container name."
+  value       = var.create_logic_app_containers ? { for k, c in var.logic_app_containers : k => c.name } : {}
+}

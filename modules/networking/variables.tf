@@ -30,14 +30,15 @@ variable "subnet_cidrs" {
   description = "CIDR blocks for each service subnet"
   type        = map(string)
   default = {
-    foundry  = "10.0.1.0/24"
-    storage  = "10.0.2.0/24"
-    search   = "10.0.3.0/24"
-    redis    = "10.0.4.0/24"
-    keyvault = "10.0.5.0/24"
-    apim     = "10.0.6.0/24"
-    litellm  = "10.0.7.0/24"
-    cosmosdb = "10.0.8.0/24"
+    foundry   = "10.0.1.0/24"
+    storage   = "10.0.2.0/24"
+    search    = "10.0.3.0/24"
+    redis     = "10.0.4.0/24"
+    keyvault  = "10.0.5.0/24"
+    apim      = "10.0.6.0/24"
+    litellm   = "10.0.7.0/24"
+    cosmosdb  = "10.0.8.0/24"
+    event_hub = "10.0.9.0/24"
   }
 }
 
@@ -61,6 +62,12 @@ variable "enable_litellm" {
 
 variable "enable_cosmosdb" {
   description = "Whether Cosmos DB resources are enabled (controls DNS zone creation)"
+  type        = bool
+  default     = false
+}
+
+variable "enable_event_hub" {
+  description = "Whether Event Hub resources are enabled (controls subnet + DNS zone creation)"
   type        = bool
   default     = false
 }
