@@ -1,0 +1,26 @@
+terraform {
+  required_version = ">= 1.9"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.64"
+    }
+    azapi = {
+      source  = "azure/azapi"
+      version = "~> 2.8"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.8"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = var.prevent_deletion_if_contains_resources
+    }
+  }
+}
