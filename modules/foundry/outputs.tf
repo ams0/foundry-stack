@@ -1,16 +1,16 @@
 output "hub_id" {
-  description = "AI Foundry Hub resource ID"
-  value       = azurerm_ai_foundry.this.id
+  description = "AI Foundry Hub resource ID (null when create_hub = false)"
+  value       = var.create_hub ? azurerm_ai_foundry.this[0].id : null
 }
 
 output "hub_principal_id" {
-  description = "AI Foundry Hub system-assigned identity principal ID"
-  value       = azurerm_ai_foundry.this.identity[0].principal_id
+  description = "AI Foundry Hub system-assigned identity principal ID (null when create_hub = false)"
+  value       = var.create_hub ? azurerm_ai_foundry.this[0].identity[0].principal_id : null
 }
 
 output "project_id" {
-  description = "AI Foundry Project resource ID (legacy portal)"
-  value       = azurerm_ai_foundry_project.this.id
+  description = "AI Foundry Project resource ID (legacy portal). Null when create_hub = false."
+  value       = var.create_hub ? azurerm_ai_foundry_project.this[0].id : null
 }
 
 output "ai_services_id" {
@@ -45,8 +45,8 @@ output "foundry_project_endpoints" {
 }
 
 output "portal_url" {
-  description = "Azure AI Foundry portal URL for the project"
-  value       = "https://ai.azure.com/project/${azurerm_ai_foundry_project.this.name}/overview?wsid=${azurerm_ai_foundry_project.this.id}"
+  description = "Azure AI Foundry portal URL for the project (legacy portal; null when create_hub = false)"
+  value       = var.create_hub ? "https://ai.azure.com/project/${azurerm_ai_foundry_project.this[0].name}/overview?wsid=${azurerm_ai_foundry_project.this[0].id}" : null
 }
 
 output "deployment_ids" {

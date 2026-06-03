@@ -32,14 +32,22 @@ variable "dns_zone_ids" {
   default     = {}
 }
 
+variable "create_hub" {
+  description = "Create the legacy AI Foundry Hub + Hub Project (requires storage_account_id and key_vault_id). When false, only the AI Services account + new-portal project + model deployments are created — useful for additional regional Foundry endpoints behind a gateway."
+  type        = bool
+  default     = true
+}
+
 variable "storage_account_id" {
-  description = "Storage account ID to link to Hub"
+  description = "Storage account ID to link to Hub. Required when create_hub = true."
   type        = string
+  default     = null
 }
 
 variable "key_vault_id" {
-  description = "Key Vault ID to link to Hub"
+  description = "Key Vault ID to link to Hub. Required when create_hub = true."
   type        = string
+  default     = null
 }
 
 variable "application_insights_id" {

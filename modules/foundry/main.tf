@@ -69,9 +69,11 @@ resource "azurerm_cognitive_deployment" "this" {
   }
 }
 
-# --- AI Foundry Hub ---
+# --- AI Foundry Hub (legacy portal, optional) ---
 
 resource "azurerm_ai_foundry" "this" {
+  count = var.create_hub ? 1 : 0
+
   name                    = "${var.name_prefix}-hub"
   location                = var.location
   resource_group_name     = var.resource_group_name
@@ -97,11 +99,11 @@ resource "azurerm_ai_foundry" "this" {
 # --- Redis connection to Hub ---
 
 resource "azapi_resource" "redis_connection" {
-  count = var.enable_redis ? 1 : 0
+  count = var.create_hub && var.enable_redis ? 1 : 0
 
   type      = "Microsoft.MachineLearningServices/workspaces/connections@2024-10-01"
   name      = "redis-cache"
-  parent_id = azurerm_ai_foundry.this.id
+  parent_id = azurerm_ai_foundry.this[0].id
 
   body = {
     properties = {
@@ -119,12 +121,14 @@ resource "azapi_resource" "redis_connection" {
   }
 }
 
-# --- Hub Project (legacy portal) ---
+# --- Hub Project (legacy portal, optional) ---
 
 resource "azurerm_ai_foundry_project" "this" {
+  count = var.create_hub ? 1 : 0
+
   name               = "${var.name_prefix}-project"
-  location           = azurerm_ai_foundry.this.location
-  ai_services_hub_id = azurerm_ai_foundry.this.id
+  location           = azurerm_ai_foundry.this[0].location
+  ai_services_hub_id = azurerm_ai_foundry.this[0].id
 
   identity {
     type = "SystemAssigned"
@@ -151,10 +155,10 @@ resource "azurerm_cognitive_account_project" "this" {
 # --- Policy exemption ---
 
 resource "azurerm_resource_policy_exemption" "hub_public_access" {
-  count = var.policy_exemption_policy_assignment_id != "" ? 1 : 0
+  count = var.create_hub && var.policy_exemption_policy_assignment_id != "" ? 1 : 0
 
   name                 = "${var.name_prefix}-hub-policy-exemption"
-  resource_id          = azurerm_ai_foundry.this.id
+  resource_id          = azurerm_ai_foundry.this[0].id
   policy_assignment_id = var.policy_exemption_policy_assignment_id
   exemption_category   = "Waiver"
   description          = "Allow public/IP-restricted network access for AI Foundry Hub"

@@ -21,7 +21,7 @@ resource "azurerm_private_endpoint" "ai_services" {
 }
 
 resource "azurerm_private_endpoint" "hub" {
-  count = var.enable_private_networking ? 1 : 0
+  count = var.create_hub && var.enable_private_networking ? 1 : 0
 
   name                = "${var.name_prefix}-pe-hub"
   location            = var.location
@@ -31,7 +31,7 @@ resource "azurerm_private_endpoint" "hub" {
 
   private_service_connection {
     name                           = "${var.name_prefix}-psc-hub"
-    private_connection_resource_id = azurerm_ai_foundry.this.id
+    private_connection_resource_id = azurerm_ai_foundry.this[0].id
     subresource_names              = ["amlworkspace"]
     is_manual_connection           = false
   }
